@@ -1,17 +1,57 @@
+#A pipeline describes the flow of data from the origin system to destination systems and defines how to transform the data along the way.
+#GitHub Actions is a continuous integration and continuous delivery (CI/CD) platform that allows you to automate your build, test, and deployment pipeline
+
+# The name of the workflow as it will appear in the "Actions" tab of the GitHub repository.
+# If this field is omitted, the name of the workflow file will be used instead.
 name: Super-Linter
 
+# "on" ist der Command how to start a pipeline
+# in this example it is the "push" command from git trigger the pipeline
 on: push
 
+# A job is the execution of a pipeline. A job instance defines the pipeline to run and the engine that runs the pipeline.
+# Groups together all the jobs that run in the Super-Linter workflow.
 jobs:
+  # https://github.com/marketplace/actions/super-linter
+  # It is a simple combination of various linters, written in bash, to help validate your source code.
+
+  # Job ID
+  # ID is used as a reference, from other jobs or step
   super-lint:
+    # Name of the job
+    # Name is used for display purposes on GitHub.
     name: Lint code base
+
+    # Configures the job to run on the latest version of an Ubuntu Linux runner.
+    # This means that the job will execute on a fresh virtual machine hosted by GitHub.
+    # For syntax examples using other runners, see "Workflow syntax for GitHub Actions"
     runs-on: ubuntu-latest
+
     steps:
+      # name of the step Checkout code
       - name: Checkout code
+
+        #The uses keyword specifies that this step will run v2 of the actions/checkout action.
+        #This is an action that checks out your repository onto the runner, allowing you to run scripts or
+        #other actions against your code (such as build and test tools).
+        #You should use the checkout action any time your workflow will use the repository's code.
         uses: actions/checkout@v2
 
+        #name of the next step - Run Super Linter
       - name: Run Super-Linter
+        # This repository is for the GitHub Action to run a Super-Linter.
         uses: github/super-linter@v4
+
+        # GitHub sets default variables for each GitHub Actions workflow run.
+        # You can also set custom variables for use in a single workflow or multiple workflows.
+        # https://docs.github.com/en/actions/learn-github-actions/variables
+        # https://docs.github.com/en/actions/deployment/targeting-different-environments/using-environments-for-deployment
         env:
+          # The default branch name in Git is master
+          # Trigger on main Branch
           DEFAULT_BRANCH: main
+
+          #https://docs.github.com/en/actions/security-guides/automatic-token-authentication
+          #At the start of each workflow job, GitHub automatically creates a unique GITHUB_TOKEN secret
+          #to use in your workflow. You can use the GITHUB_TOKEN to authenticate in the workflow job.
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
