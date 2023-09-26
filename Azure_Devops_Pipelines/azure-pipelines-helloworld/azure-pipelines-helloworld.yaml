@@ -34,7 +34,7 @@ stages:
     steps:
       # This is a keyword in Steps
       # string. Required as first property. An inline script will be executed
-      # If the pool as agent in ubuntu vm - start a 
+      # If the pool as agent in ubuntu vm - start a bash script 
     - script: echo "hello to my first Build"
   
   # The next stage of the pipeline
