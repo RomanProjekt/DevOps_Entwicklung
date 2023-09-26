@@ -9,7 +9,7 @@ pipeline {
     #will execute in the Jenkins environment depending on where the agent section is placed. 
     #The section must be defined at the top-level inside the pipeline block, but stage-level usage is optional.
 
-    #and means:
+    #any means:
     #any - Execute the Pipeline, or stage, on any available agent. For example: agent any
     agent any 
 
