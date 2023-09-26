@@ -1,0 +1,53 @@
+#The name of the workflow. GitHub displays the names of your workflows under your repository's "Actions" tab.
+#If you omit name, GitHub displays the workflow file path relative to the root of the repository.
+#Name of the git hub action pipeline
+name: learn-github-actions
+
+#The name for workflow runs generated from the workflow.
+#GitHub displays the workflow run name in the list of workflow runs on your repository's "Actions" tab.
+run-name: ${{ github.actor }} is learning GitHub Actions
+
+# Trigger in Github Action Pipeline
+# How does the pipeline starts with the trigger keyword "push"
+on: [push]
+
+#Defintion of jobs in Github Action
+jobs:
+  #Name of the job - in this case "check-bats-version"
+  check-bats-version:
+    #in which vm starts the pipeline
+    #ubuntu with latest version
+    runs-on: ubuntu-latest
+
+    #A job contains a sequence of tasks called steps. Steps can run commands, run setup tasks,
+    #or run an action in your repository, a public repository, or an action published in a Docker registry.
+    #Not all steps run actions, but all actions run as a step. Each step runs in its own process
+    #in the runner environment and has access to the workspace and filesystem.
+    #Because steps run in their own process, changes to environment variables are not preserved between steps.
+    #GitHub provides built-in steps to set up and complete a job. Must contain either uses or run.
+
+    #Defintion a step in the pipeline
+    steps:
+      #Selects an action to run as part of a step in your job. An action is a reusable unit of code.
+      #You can use an action defined in the same repository as the workflow, a public repository,
+      #or in a published Docker container image.
+
+      #https://github.com/marketplace/actions/checkout
+      #This action checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+      - uses: actions/checkout@v3
+
+        # This action provides the following functionality for GitHub Actions users: Optionally downloading
+        # and caching distribution of the requested Node.js version, and adding it to the PATH.
+        # Optionally caching npm/yarn/pnpm dependencies
+      - uses: actions/setup-node@v3
+
+        # you can set the version of node.js
+        # with the keyowd "with" and "node-version"
+        with:
+          node-version: "14"
+
+        #"run" - Keyword you can run the bash-scripts that definton
+        # install the bats - Bash Automated Testing System
+        #https://www.npmjs.com/package/bats
+      - run: npm install -g bats
+      - run: bats -v
