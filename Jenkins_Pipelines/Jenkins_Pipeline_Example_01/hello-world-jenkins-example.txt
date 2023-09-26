@@ -1,0 +1,30 @@
+#Using a Jenkinsfile 
+#https://www.jenkins.io/doc/book/pipeline/syntax/
+
+#Defintion of the pipeline in Jenkins
+#All valid Declarative Pipelines must be enclosed within a pipeline block, for example:
+pipeline {
+
+    #The agent section specifies where the entire Pipeline, or a specific stage, 
+    #will execute in the Jenkins environment depending on where the agent section is placed. 
+    #The section must be defined at the top-level inside the pipeline block, but stage-level usage is optional.
+
+    #and means:
+    #any - Execute the Pipeline, or stage, on any available agent. For example: agent any
+    agent any 
+
+    #Defintion of Stages in Jenkins
+    stages {
+
+        #Defintion of stage in Jenkins
+        #Name of the stage - "Stage 1"
+        stage('Stage 1') {
+
+            #Definton of steps thats executed in Jenkins
+
+            steps {
+                echo 'Hello world!' 
+            }
+        }
+    }
+}
