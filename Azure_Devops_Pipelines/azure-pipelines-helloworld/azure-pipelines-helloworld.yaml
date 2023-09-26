@@ -1,0 +1,109 @@
+
+#https://learn.microsoft.com/en-us/azure/devops/pipelines/process/stages?view=azure-devops&tabs=yaml
+# You can organize pipeline jobs into stages. 
+# Stages are the major divisions in a pipeline: "build this app", "run these tests", and "deploy to pre-production" 
+# are good examples of stages. They're logical boundaries in your pipeline where you can pause 
+# the pipeline and perform various checks.
+stages:
+
+  # Definiton of one of the stages 
+  # "Build" is the name of the stage
+- stage: Build
+
+  # In the simplest case, a pipeline has a single job. In that case, you do not have to explicitly use 
+  # the job keyword unless you are using a template. You can directly specify the steps in your YAML file.
+
+  jobs:
+    #Defintion of the jobs 
+  - job: Build
+
+    #The pool keyword specifies which pool to use for a job of the pipeline. 
+    #A pool specification also holds information about the job's strategy for running.
+    pool:
+      #Property-keyword for the pool "vmImage"
+      #Name of the VM image you want to use; valid only in the Microsoft-hosted pool.
+      vmImage: 'ubuntu-latest'
+
+      #https://learn.microsoft.com/en-us/azure/devops/pipelines/process/tasks?view=azure-devops&tabs=yaml
+      # # 'true' if future steps should run even if this step fails; defaults to 'false'
+    continueOnError: true
+
+    #https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps?view=azure-pipelines
+    # Each step runs in its own process on an agent 
+    # and has access to the pipeline workspace on a local hard drive.
+    steps:
+      # This is a keyword in Steps
+      # string. Required as first property. An inline script will be executed
+      # If the pool as agent in ubuntu vm - start a 
+    - script: echo "hello to my first Build"
+  
+  # The next stage of the pipeline
+  # The name is "dev-deploy" and should explain, what comes next in the pipeline
+
+  #----------------------------------------------------------------------------------------------------------------------------------
+- stage: dev_deploy
+
+  #Definiton of the next jobs in the stage "dev_deploy"
+  jobs:
+    
+    #https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops
+    #https://learn.microsoft.com/en-us/azure/devops/pipelines/overview-azure?view=azure-devops
+    #name of the deployment job, A-Z, a-z, 0-9, and underscore. 
+    #The word "deploy" is a keyword and is unsupported as the deployment name.
+  - deployment: dev_deploy
+
+    #The pool in the stage "dev_deploy". 
+    pool:
+      #Name of the VM image you want to use;
+      vmImage: 'ubuntu-latest'
+
+   # creates an environment if it doesn't exist
+   # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops
+    environment: 'dev-hello'
+
+    # Strategy is a keyword to defintion how does the script are running in the step
+    strategy:
+
+    # Defintion name: runOnce is the name of the strategy
+    # Only one time to executed the script
+    # #rolling, canary are the other strategies that are supported
+      runOnce:
+
+        # Defintion -> deploy 
+        # which step would you like to deploy
+        deploy:
+        # which steps have a defintion of the deployment strategy
+          steps:
+          - script: echo "hello, dev world !!!"
+
+  #----------------------------------------------------------------------------------------------------------------------------------
+  #Next stage in the other stages-pool with the name "qu_deploy"
+- stage: qa_deploy
+  jobs:
+
+    # Keyworld: "deployment" 
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/environments?view=azure-devops
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops#deployment-strategies
+
+    # name of the deployment job, A-Z, a-z, 0-9, and underscore. 
+    #The word "deploy" is a keyword and is unsupported as the deployment name.
+  - deployment: qa_deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    
+    # creates an environment if it doesn't exist 
+    environment: 'qa-hello'
+
+    # Strategy is a keyword to defintion how does the script are running in the step
+    strategy:
+
+      # Only one time to executed the script
+      # #rolling, canary are the other strategies that are supported
+      runOnce:
+
+        # thats the main keyword that you need to say what to do 
+        # which step would you like to deploy
+        deploy:
+          # which steps have a defintion of the deployment strategy
+          steps:
+          - script: echo "hello, qa world !!!"
